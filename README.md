@@ -13,6 +13,7 @@ For burning the OS image to the SD Card:
 
 Mac:
 http://www.tweaking4all.com/hardware/raspberry-pi/macosx-apple-pi-baker/
+
 Windows:
 http://sourceforge.net/projects/win32diskimager/
 
