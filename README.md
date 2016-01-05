@@ -37,10 +37,27 @@ Step 2: Go to Menu->Preferences->Mouse and Keyboard Settings.  Select the Keyboa
 
 Step 3: Run 'sudo raspi-config' from the terminal (leave out the quotation marks) and select "expand file system."
 
-Step 4: Run 'sudo apt-get update' from the terminal.
+Step 4: After the reboot, Run 'sudo raspi-config' and select Advanced Options->SPI, Enable SPI Interface and enable the SPI kernel module to be loaded by default.
 
-Step 5: Run 'sudo apt-get upgrade' from the terminal.
+Step 5: Run the following commands one line at a time from the terminal.
 
-Step 6: Run 'sudo rpi-update' from the terminal.
-
-Step 7: Run 'sudo apt-get install vim' from the terminal.
+sudo apt-get update
+sudo apt-get upgrade
+sudo rpi-update
+sudo modprobe spi_bcm2835
+mkdir temp
+cd temp
+git clone https://github.com/TMRh20/RF24.git
+cd RF24
+sudo make install
+cd ..
+git clone https://github.com/TMRh20/RF24Network.git
+cd RF24Network
+sudo make install
+cd ..
+git clone https://github.com/TMRh20/RF24Mesh.git
+cd RF24Mesh
+sudo make install
+cd ..
+cd ..
+rm -rf temp
