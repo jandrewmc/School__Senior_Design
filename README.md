@@ -83,3 +83,6 @@ cd ..
 cd ..
 
 rm -rf temp
+
+
+Notes 1/5/16:  Need to include sending from the transmitter.
