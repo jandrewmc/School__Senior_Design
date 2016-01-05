@@ -42,22 +42,41 @@ Step 4: After the reboot, Run 'sudo raspi-config' and select Advanced Options->S
 Step 5: Run the following commands one line at a time from the terminal.
 
 sudo apt-get update
+
 sudo apt-get upgrade
+
 sudo rpi-update
+
 sudo modprobe spi_bcm2835
+
 mkdir temp
+
 cd temp
+
 git clone https://github.com/TMRh20/RF24.git
+
 cd RF24
+
 sudo make install
+
 cd ..
+
 git clone https://github.com/TMRh20/RF24Network.git
+
 cd RF24Network
+
 sudo make install
+
 cd ..
+
 git clone https://github.com/TMRh20/RF24Mesh.git
+
 cd RF24Mesh
+
 sudo make install
+
 cd ..
+
 cd ..
+
 rm -rf temp
