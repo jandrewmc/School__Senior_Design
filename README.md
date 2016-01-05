@@ -1,5 +1,5 @@
 current server vnc access:
-jandrewmc.ddns.net::333
+jandrewmc.ddns.net::999
 
 # SeniorDesign
 
