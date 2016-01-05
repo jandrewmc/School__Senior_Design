@@ -40,3 +40,7 @@ Step 3: Run 'sudo raspi-config' from the terminal (leave out the quotation marks
 Step 4: Run 'sudo apt-get update' from the terminal.
 
 Step 5: Run 'sudo apt-get upgrade' from the terminal.
+
+Step 6: Run 'sudo rpi-update' from the terminal.
+
+Step 7: Run 'sudo apt-get install vim' from the terminal.
