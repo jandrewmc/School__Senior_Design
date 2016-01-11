@@ -1,6 +1,13 @@
 current server vnc access:
 jandrewmc.ddns.net::999
 
+current ssh address
+jandrewmc.ddns.net
+Port: 888
+
+Trello board link:
+https://trello.com/b/kzxt0wgR/senior-design-project
+
 # SeniorDesign
 
 
