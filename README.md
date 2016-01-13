@@ -1,3 +1,10 @@
+On the Arduino,
+RF24L01+ on pins 9 and 10
+Pressure Sensor on pins A4 and A5
+Servo on pin 8
+Thermometer on 7
+
+
 current server vnc access:
 jandrewmc.ddns.net::999
 
