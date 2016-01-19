@@ -12,18 +12,28 @@ RF24 radio(9, 10);
 RF24Network network(radio);
 RF24Mesh mesh(radio, network);
 
-DHT dht(7, DHT11);
+typedef struct
+{
+	int nodeid;
+	int currentTemperature;
+	double currentPressure;
+	int currentFanSpeed;
+	int currentServoPosition;
+} outgoingData;
+
+typedef struct
+{
+	int fanSpeed;
+	int servoPosition;
+} incomingData;
+
+DHT tempSensor(7, DHT11);
 
 SFE_BMP180 pressure;
 
 Servo myservo;
 
-uint32_t displayTimer = 0;
-
-struct payload_t {
-  unsigned long ms;
-  unsigned long counter;
-};
+outgoingData *out = new outgoingData;
 
 //This method will set the unique identifier
 //for the register, based on DIP switches
@@ -49,12 +59,12 @@ int getNodeID()
 }
 
 //this method returns the current farenheight temperature from the sensor;
-float getCurrentTemperature()
+void getCurrentTemperature()
 {
-	return dht.readTemperature(true);
+	out->currentTemperature = (int) dht.readTemperature(true);
 }
 
-double getPressure()
+void getCurrentPressure()
 {
 	char status;
 	double T, P, p0, a;
@@ -73,7 +83,7 @@ double getPressure()
 				status = pressure.getPressure(P, T);
 				if (status != 0)
 				{
-					return (P);
+					out->currentPressure = P;
 				}
 			}
 		}
@@ -83,53 +93,16 @@ double getPressure()
 void setup() 
 {
   	Serial.begin(115200);
-  myservo.attach(8);
+	myservo.attach(8);
 	mesh.setNodeID(getNodeID());
-  mesh.begin();
-	dht.begin();
+	mesh.begin();
+	tempSensor.begin();
 	pressure.begin();
-
 }
 
-
-
-void loop() {
-
-  mesh.update();
-
-  // Send to the master node every second
-  if (millis() - displayTimer >= 1000) {
-    displayTimer = millis();
-
-    // Send an 'M' type message containing the current millis()
-    if (!mesh.write(&displayTimer, 'M', sizeof(displayTimer))) {
-
-      // If a write fails, check connectivity to the mesh network
-      if ( ! mesh.checkConnection() ) {
-        //refresh the network address
-        Serial.println("Renewing Address");
-        mesh.renewAddress();
-      } else {
-        Serial.println("Send fail, Test OK");
-      }
-    } else {
-      Serial.print("Send OK: "); Serial.println(displayTimer);
-    }
-  }
-
-  while (network.available()) {
-    RF24NetworkHeader header;
-    payload_t payload;
-    network.read(header, &payload, sizeof(payload));
-    Serial.print("Received packet #");
-    Serial.print(payload.counter);
-    Serial.print(" at ");
-    Serial.println(payload.ms);
-  }
+void loop()
+{
+	mesh.update();
+	getCurrentTemperature();
+	getCurrentPressure();	
 }
-
-
-
-
-
-
