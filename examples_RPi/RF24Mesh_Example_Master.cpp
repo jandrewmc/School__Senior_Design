@@ -16,53 +16,75 @@
 #include "RF24Mesh/RF24Mesh.h"  
 #include <RF24/RF24.h>
 #include <RF24Network/RF24Network.h>
-
+#include <iostream>
 
 RF24 radio(RPI_V2_GPIO_P1_15, BCM2835_SPI_CS0, BCM2835_SPI_SPEED_8MHZ);  
 RF24Network network(radio);
 RF24Mesh mesh(radio,network);
 
+typedef struct
+{
+	int16_t nodeid;
+	int16_t currentTemperature;
+	int16_t currentFanSpeed;
+	int16_t currentServoPosition;
+	float currentPressure;
+}incomingData;
 
+typedef struct
+{
+	int16_t nodeid;
+	int16_t fanSpeed;
+	int16_t servoPosition;
+}outgoingData;
+
+typedef struct
+{
+	unsigned long ms;
+	unsigned long counter;
+}payload_t;
 
 int main(int argc, char** argv) {
-  
-  // Set the nodeID to 0 for the master node
   mesh.setNodeID(0);
-  // Connect to the mesh
-  printf("start\n");
   mesh.begin();
-  radio.printDetails();
 
 while(1)
 {
-  
-  // Call network.update as usual to keep the network updated
   mesh.update();
-
-  // In addition, keep the 'DHCP service' running on the master node so addresses will
-  // be assigned to the sensor nodes
   mesh.DHCP();
-  
-  
-  // Check for incoming data from the sensors
-  while(network.available()){
-//    printf("rcv\n");
+  while(network.available())
+  {
     RF24NetworkHeader header;
     network.peek(header);
     
-    uint32_t dat=0;
-    switch(header.type){
-      // Display the incoming millis() values from the sensor nodes
-      case 'M': network.read(header,&dat,sizeof(dat)); 
-                printf("Rcv %u from 0%o\n",dat,header.from_node);
-                 break;
-      default:  network.read(header,0,0); 
-                printf("Rcv bad type %d from 0%o\n",header.type,header.from_node); 
+	incomingData in;
+
+    switch(header.type)
+	{
+     	case 'M': network.read(header,&in,sizeof(in)); 
+				printf("%u, %u, %u, %u, %f\n", in.nodeid, in.currentTemperature, in.currentFanSpeed, in.currentServoPosition, in.currentPressure);
                 break;
-    }
+		default:
+				payload_t payload;
+				network.read(header, &payload, sizeof(payload));
+	}
   }
-delay(2);
-  }
+  delay(2000);
+
+	outgoingData out;
+	out.nodeid = 9;
+	out.fanSpeed = 200;
+	out.servoPosition = 10;
+	mesh.write(&out, 'N', sizeof(out), out.nodeid);
+
+	delay(2000);
+
+	outgoingData out2;
+	out2.nodeid = 9;
+	out2.fanSpeed = 100;
+	out2.servoPosition = 170;
+	mesh.write(&out2, 'N', sizeof(out2), out2.nodeid);
+}
 return 0;
 }
 
