@@ -81,6 +81,7 @@ int nodeCommunication::nodeUpdate()
                         roomVector[i].fanSpeed = in.currentFanSpeed;
                         roomVector[i].servoPosition = in.currentServoPosition;
                         roomVector[i].pressure = in.currentPressure;
+                        roomVector[i].inUse = in.isMotionDetected;
                     }
                 }
                 if (!exists)
